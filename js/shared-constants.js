@@ -21,3 +21,15 @@ const filters_screen = [
   { id: "LCD", label: "LCD", isActive: false },
   { id: "OLED", label: "OLED", isActive: false }
 ];
+
+// scatterplot scales
+const xScaleS = d3.scaleLinear();
+const yScaleS = d3.scaleLinear();
+const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+// tooltip settings
+const tooltipWidth = 65;
+const tooltipHeight = 32;
+
+// scatterplot inner chart reference
+let innerChartS;

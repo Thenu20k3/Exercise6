@@ -8,4 +8,8 @@ d3.csv("data/Ex6_TVdata_withStar.csv").then(data => {
 
   drawHistogram(data);
   populateFilters(data);
+  drawScatterplot(data);
+
+  createTooltip();
+  handleMouseEvents();
 });
