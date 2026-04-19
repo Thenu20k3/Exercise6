@@ -1,15 +1,42 @@
-function drawHistogram(data) {
+let svg;
+let innerChart;
+let barsGroup;
+let xAxisGroup;
+let yAxisGroup;
 
-  const svg = d3.select("#histogram")
+function drawHistogram(data) {
+  svg = d3.select("#histogram")
     .append("svg")
     .attr("viewBox", `0 0 ${width} ${height}`);
 
-  const innerChart = svg.append("g")
+  innerChart = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-  const bins = binGenerator(data);
+  barsGroup = innerChart.append("g");
 
-  console.log(bins);
+  xAxisGroup = innerChart.append("g")
+    .attr("transform", `translate(0, ${innerHeight})`);
+
+  yAxisGroup = innerChart.append("g");
+
+  svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", height - 5)
+    .attr("text-anchor", "middle")
+    .text("Labelled Energy Consumption (kWh/year)");
+
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", 15)
+    .attr("text-anchor", "middle")
+    .text("Frequency");
+
+  updateHistogram(data);
+}
+
+function updateHistogram(data) {
+  const bins = binGenerator(data);
 
   const minEng = bins[0].x0;
   const maxEng = bins[bins.length - 1].x1;
@@ -24,34 +51,23 @@ function drawHistogram(data) {
     .range([innerHeight, 0])
     .nice();
 
-  innerChart.selectAll("rect")
-    .data(bins)
-    .enter()
+  const bars = barsGroup.selectAll("rect")
+    .data(bins);
+
+  bars.enter()
     .append("rect")
+    .merge(bars)
+    .transition()
+    .duration(600)
     .attr("x", d => xScale(d.x0))
     .attr("y", d => yScale(d.length))
-    .attr("width", d => Math.max(0, xScale(d.x1) - xScale(d.x0) - 1))
+    .attr("width", d => Math.max(0, xScale(d.x1) - xScale(d.x0) - 2))
     .attr("height", d => innerHeight - yScale(d.length))
     .attr("fill", barColor)
     .attr("stroke", bodyBackgroundColor);
 
-  innerChart.append("g")
-    .attr("transform", `translate(0, ${innerHeight})`)
-    .call(d3.axisBottom(xScale));
+  bars.exit().remove();
 
-  innerChart.append("g")
-    .call(d3.axisLeft(yScale));
-
-  svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", height - 5)
-    .attr("text-anchor", "middle")
-    .text("Labelled Energy Consumption (kWh/year)");
-
-svg.append("text")
-  .attr("transform", "rotate(-90)")
-  .attr("x", -height / 2)
-  .attr("y", 15)
-  .attr("text-anchor", "middle")
-  .text("Frequency");
+  xAxisGroup.transition().duration(600).call(d3.axisBottom(xScale));
+  yAxisGroup.transition().duration(600).call(d3.axisLeft(yScale));
 }

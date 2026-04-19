@@ -12,3 +12,23 @@ h1 {
 p {
   margin-bottom: 20px;
 }
+
+#filters_screen {
+  margin-bottom: 20px;
+}
+
+.filter {
+  background-color: #c57b39;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  margin-right: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.filter.active {
+  background-color: #e7c27a;
+  color: white;
+}
